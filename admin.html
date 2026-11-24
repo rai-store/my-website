@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#09090b">
+<title>RAI | لوحة التحكم</title>
+<style>
+:root{
+ --bg:#09090b;--surface:#141418;--surface2:#1b1b21;--surface3:#222229;
+ --red:#f20b36;--red2:#b90025;--redGlow:rgba(242,11,54,.28);
+ --text:#f7f7f8;--muted:#a5a5ad;--line:#393039;--green:#12b981;
+ --amber:#f59e0b;--blue:#60a5fa;--radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-width:320px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.btn{border:1px solid transparent;border-radius:11px;padding:11px 15px;background:linear-gradient(120deg,var(--red2),var(--red));color:#fff;font-weight:700;box-shadow:0 5px 18px var(--redGlow);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn.secondary{background:#28282f;border-color:#444;color:#fff;box-shadow:none}
+.btn.ghost{background:transparent;border-color:#48404a;color:#eee;box-shadow:none}
+.btn.danger{background:#38151d;border-color:#6d2433;color:#ff8799;box-shadow:none}
+.btn.success{background:#10382d;border-color:#176a50;color:#7ce7bf;box-shadow:none}
+.iconbtn{width:42px;height:42px;border-radius:12px;background:#24242b;border:1px solid #41414a;color:#fff;display:grid;place-items:center}
+svg{display:block}
+.login-screen{min-height:100svh;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 80% 10%,rgba(242,11,54,.22),transparent 35%),radial-gradient(ellipse at 10% 90%,rgba(185,0,37,.18),transparent 35%),#080809}
+.login-card{width:min(420px,100%);background:linear-gradient(145deg,#1c1c22,#101014);border:1px solid #633040;border-radius:25px;padding:30px;box-shadow:0 25px 70px #0009,0 0 35px #ed12351c}
+.logo-mark{width:76px;height:76px;border-radius:22px;margin:0 auto 12px;background:linear-gradient(145deg,#fa123f,#9c001e);display:grid;place-items:center;box-shadow:0 0 28px var(--redGlow)}
+.logo-mark svg{width:43px;height:43px}
+.login-title{text-align:center;font-size:31px;font-weight:900;letter-spacing:1px}
+.login-sub{text-align:center;color:var(--muted);font-size:13px;margin:7px 0 25px}
+.field{width:100%;padding:13px 14px;border:1px solid #44414a;border-radius:11px;background:#101014;color:#fff;margin:7px 0 15px;min-height:46px}
+label{font-size:13px;font-weight:700;color:#e6e2e5}
+.form-note{font-size:11px;color:#aaa;line-height:1.8}
+.login-error{color:#ff8193;font-size:12px;min-height:18px;margin:10px 0 0}
+.app{min-height:100svh}
+.sidebar{position:fixed;z-index:30;right:0;top:0;bottom:0;width:260px;padding:20px 15px;background:linear-gradient(180deg,#101014,#080809);border-left:1px solid #38232b;overflow-y:auto;transition:transform .25s ease}
+.brand-row{display:flex;align-items:center;gap:12px;padding:8px 8px 22px;border-bottom:1px solid #30252b;margin-bottom:17px}
+.brand-icon{width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#ff1744,#a00020);display:grid;place-items:center;box-shadow:0 0 22px var(--redGlow)}
+.brand-icon svg{width:28px;height:28px}
+.brand-name{font-size:25px;font-weight:900;letter-spacing:1px}
+.brand-caption{font-size:11px;color:#aaa;margin-top:3px}
+.nav-label{font-size:10px;color:#777;padding:12px 12px 6px}
+.nav-btn{width:100%;border:0;background:transparent;color:#c9c6cb;padding:12px 13px;margin:3px 0;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:right;font-size:13px}
+.nav-btn svg{width:19px;height:19px;flex:none}
+.nav-btn:hover{background:#252027;color:#fff}
+.nav-btn.active{background:linear-gradient(100deg,#a90025,#ef0b37);color:#fff;box-shadow:0 7px 20px #e9003430}
+.nav-btn .nav-count{margin-right:auto;background:#fff2;color:#fff;border-radius:20px;padding:2px 7px;font-size:10px}
+.sidebar-foot{margin-top:22px;padding:14px 12px;border-top:1px solid #30252b;color:#aaa;font-size:11px;line-height:1.8}
+.main{margin-right:260px;padding:22px 25px 35px;max-width:1700px;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding:5px 0 17px;border-bottom:1px solid #29252b}
+.top-left{display:flex;align-items:center;gap:12px;min-width:0}
+.menu-toggle{display:none}
+.avatar{width:48px;height:48px;border:2px solid var(--red);border-radius:50%;display:grid;place-items:center;background:#202026;color:#fff;flex:none}
+.avatar svg{width:26px;height:26px}
+.welcome{font-size:14px;font-weight:700}
+.welcome-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.top-right{display:flex;align-items:center;gap:12px}
+.top-brand{display:flex;align-items:center;gap:10px}
+.top-brand strong{font-size:30px;font-style:italic;letter-spacing:1px}
+.top-brand small{display:block;color:#aaa;font-size:10px;font-style:normal;text-align:right}
+.page-heading{display:flex;align-items:center;justify-content:space-between;margin:0 0 16px;gap:10px}
+.page-heading h1{font-size:22px;margin:0}
+.page-heading p{font-size:11px;color:var(--muted);margin:6px 0 0}
+.date-chip{font-size:11px;color:#ddd;background:#222229;border:1px solid #45404a;border-radius:20px;padding:8px 11px;white-space:nowrap}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:17px}
+.stat-card{position:relative;min-height:116px;padding:17px 16px;border:1px solid #57303a;border-radius:17px;background:linear-gradient(145deg,#222127,#121216);overflow:hidden;display:flex;align-items:center;gap:13px}
+.stat-card.hot{background:linear-gradient(130deg,#f10b36,#a90025);border-color:#ff3155;box-shadow:0 8px 25px #e5003430}
+.stat-icon{width:48px;height:48px;border-radius:14px;background:#ffffff12;display:grid;place-items:center;flex:none}
+.stat-icon svg{width:27px;height:27px}
+.stat-label{font-size:12px;color:#e4e0e3}
+.stat-value{font-size:25px;font-weight:900;margin-top:8px;direction:ltr;text-align:right;white-space:nowrap}
+.stat-foot{font-size:10px;color:#c4bdc2;margin-top:4px}
+.stat-card.hot .stat-foot{color:#ffe1e7}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.85fr);gap:14px;margin-bottom:16px}
+.panel{background:linear-gradient(145deg,#1a191f,#111115);border:1px solid #4a3540;border-radius:19px;padding:17px;min-width:0;box-shadow:0 8px 25px #0003}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.panel-title{font-size:16px;font-weight:800;display:flex;align-items:center;gap:9px}
+.panel-title svg{width:22px;height:22px;color:var(--red)}
+.chart-wrap{height:230px;position:relative}
+#salesChart{width:100%;height:100%;display:block}
+.chart-legend{font-size:10px;color:#999;margin-top:7px}
+.orders-list{display:flex;flex-direction:column}
+.order-row{display:grid;grid-template-columns:25px minmax(50px,1fr) auto auto;align-items:center;gap:9px;padding:12px 0;border-bottom:1px solid #302b32;font-size:12px}
+.order-row:last-child{border-bottom:0}
+.order-cube{width:23px;height:23px;color:#eee}
+.order-number{font-weight:700;direction:ltr;text-align:right}
+.order-price{font-weight:700;white-space:nowrap}
+.status{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:20px;font-size:10px;white-space:nowrap;background:#3b2026;color:#ff9aaa}
+.status.new{background:#4a1020;color:#ff9bad}
+.status.processing{background:#49350f;color:#ffd17b}
+.status.completed{background:#103b2c;color:#83e8bc}
+.status.cancelled{background:#333;color:#bbb}
+.quick-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.quick-card{min-height:105px;background:linear-gradient(145deg,#222127,#101014);border:1px solid #4a3540;border-radius:16px;color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:13px;box-shadow:0 5px 18px #0003}
+.quick-card svg{width:31px;height:31px;color:#ff1744}
+.quick-card.primary{background:linear-gradient(145deg,#fa0c3d,#b40027);border-color:#ff3155;box-shadow:0 0 22px #e9003430}
+.quick-card.primary svg{color:#fff}
+.section{display:none}
+.section.active{display:block}
+.table-wrap{overflow:auto;width:100%}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:right;padding:12px 10px;border-bottom:1px solid #343039;font-size:12px;vertical-align:middle}
+th{color:#aaa;font-weight:700;background:#ffffff05}
+td{color:#eee}
+.table-actions{display:flex;gap:6px;flex-wrap:wrap}
+.mini-btn{border:1px solid #49414a;background:#28252c;color:#fff;border-radius:8px;padding:7px 9px;font-size:11px}
+.mini-btn.red{background:#4b111e;border-color:#762637;color:#ff9aaa}
+.mini-btn.green{background:#103b2c;border-color:#17654c;color:#8ae8c1}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.search{max-width:280px;min-width:180px;margin:0}
+.empty{padding:28px;text-align:center;color:#999;font-size:13px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
+.customer-card,.message-card,.category-row{padding:13px;border:1px solid #39323b;border-radius:13px;background:#19181e;margin-bottom:9px}
+.customer-card{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.customer-avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#4a1522;color:#ff9aaa;font-weight:900;flex:none}
+.customer-info{min-width:0;flex:1}
+.customer-info strong{font-size:13px}
+.customer-info small{display:block;color:#aaa;font-size:11px;margin-top:5px;overflow-wrap:anywhere}
+.category-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.message-card strong{font-size:13px}
+.message-card p{font-size:12px;color:#ddd;line-height:1.8;overflow-wrap:anywhere}
+.message-meta{font-size:10px;color:#999}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.notice{border:1px solid #6b4b22;background:#332612;color:#ffdfa0;padding:12px;border-radius:12px;font-size:11px;line-height:1.8;margin-top:12px}
+.backdrop{display:none}
+.image-upload{display:flex;flex-direction:column;gap:10px}
+.image-upload input[type=file]{width:100%;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--surface2);color:var(--text)}
+.image-preview{display:none;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2)}
+.image-preview.show{display:flex}
+.image-preview img{width:76px;height:76px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.image-preview button{padding:9px 12px;border-radius:9px;background:#302027;color:#fff;border:1px solid var(--line)}
+.product-thumb{width:42px;height:42px;object-fit:cover;border-radius:9px;vertical-align:middle;margin-left:7px}
+@media(max-width:1100px){
+ .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .dashboard-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+ .sidebar{transform:translateX(105%);width:min(290px,84vw);box-shadow:-15px 0 40px #0008}
+ body.menu-open .sidebar{transform:translateX(0)}
+ .backdrop{position:fixed;inset:0;background:#0009;z-index:25}
+ body.menu-open .backdrop{display:block}
+ .main{margin:0;padding:13px 12px 28px}
+ .menu-toggle{display:grid}
+ .topbar{padding-bottom:13px;margin-bottom:17px}
+ .avatar{width:41px;height:41px}
+ .welcome{font-size:12px}
+ .welcome-sub{font-size:10px}
+ .top-brand strong{font-size:25px}
+ .top-brand .brand-icon{width:39px;height:39px;border-radius:12px}
+ .top-brand .brand-icon svg{width:23px;height:23px}
+ .stats-grid{gap:9px}
+ .stat-card{min-height:98px;padding:12px 10px;gap:9px;border-radius:14px}
+ .stat-icon{width:37px;height:37px;border-radius:11px}
+ .stat-icon svg{width:22px;height:22px}
+ .stat-label{font-size:10px}
+ .stat-value{font-size:20px;margin-top:7px}
+ .stat-foot{font-size:9px}
+ .panel{padding:13px;border-radius:15px}
+ .panel-title{font-size:14px}
+ .chart-wrap{height:195px}
+ .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .quick-card{min-height:90px;font-size:11px;border-radius:13px}
+ .quick-card svg{width:27px;height:27px}
+ .page-heading h1{font-size:19px}
+ .settings-grid{grid-template-columns:1fr}
+}
+@media(max-width:390px){
+ .top-brand strong{font-size:21px}
+ .top-brand small{font-size:9px}
+ .stat-card{display:block}
+ .stat-icon{float:left}
+ .stat-value{font-size:19px}
+ .order-row{grid-template-columns:22px minmax(42px,1fr) auto}
+ .order-row .status{grid-column:2/4;justify-self:start}
+ .quick-card{min-height:84px}
+}
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+ <form class="login-card" id="loginForm">
+  <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 10h18l-2 10H5L3 10Z"/><path d="M7 10V7a5 5 0 0 1 10 0v3M2 10l4 3 4-3 4 3 4-3 4 3"/></svg></div>
+  <div class="login-title">RAI</div>
+  <div class="login-sub">لوحة تحكم متجر راي</div>
+  <label for="loginUser">اسم المستخدم</label>
+  <input class="field" id="loginUser" name="username" autocomplete="username" required placeholder="اسم المستخدم">
+  <label for="loginPass">كلمة المرور</label>
+  <input class="field" id="loginPass" name="password" type="password" autocomplete="current-password" required placeholder="كلمة المرور">
+  <button class="btn" type="submit" style="width:100%;min-height:48px">تسجيل الدخول</button>
+  <div class="login-error" id="loginError"></div>
+ </form>
+</div>
+
+<div class="app hidden" id="app">
+ <div class="backdrop" id="backdrop"></div>
+ <aside class="sidebar" id="sidebar">
+  <div class="brand-row">
+   <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 10h18l-2 10H5L3 10Z"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg></div>
+   <div><div class="brand-name">RAI</div><div class="brand-caption">لوحة تحكم المتجر</div></div>
+  </div>
+  <div class="nav-label">القائمة الرئيسية</div>
+  <button class="nav-btn active" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="8" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="15" width="7" height="6" rx="1"/></svg>الرئيسية</button>
+  <button class="nav-btn" data-page="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 7H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>الطلبات <span class="nav-count" id="newOrdersCount">0</span></button>
+  <button class="nav-btn" data-page="products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9"/></svg>المنتجات</button>
+  <button class="nav-btn" data-page="categories"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>الأقسام</button>
+  <button class="nav-btn" data-page="customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>العملاء</button>
+  <button class="nav-btn" data-page="messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2.1-5.3A8.5 8.5 0 1 1 21 11.5Z"/></svg>الشكاوى</button>
+  <button class="nav-btn" data-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.5-.9l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.8l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.5-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.5.9l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.7Z"/></svg>الإعدادات</button>
+  <div class="sidebar-foot">RAI STORE<br>إدارة المتجر بكل سهولة</div>
+ </aside>
+
+ <main class="main">
+  <header class="topbar">
+   <div class="top-left">
+    <button class="iconbtn menu-toggle" id="menuToggle" aria-label="فتح القائمة"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <div class="avatar"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0Z"/></svg></div>
+    <div><div class="welcome" id="welcomeUser">مدير المتجر</div><div class="welcome-sub">مرحباً بك في لوحة تحكم متجر راي</div></div>
+   </div>
+   <div class="top-right">
+    <div class="top-brand"><div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 10h18l-2 10H5L3 10Z"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg></div><div><strong>RAI</strong><small>لوحة تحكم المتجر</small></div></div>
+   </div>
+  </header>
+
+  <section class="section active" id="dashboard">
+   <div class="page-heading"><div><h1>الرئيسية</h1><p>نظرة عامة على أداء متجرك</p></div><span class="date-chip" id="today"></span></div>
+   <div class="stats-grid">
+    <div class="stat-card hot"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="stat-label">إجمالي المبيعات</div><div class="stat-value" id="statSales">0</div><div class="stat-foot">ريال سعودي</div></div></div>
+    <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9"/></svg></div><div><div class="stat-label">إجمالي المنتجات</div><div class="stat-value" id="statProducts">0</div><div class="stat-foot">منتج في المتجر</div></div></div>
+    <div class="stat-card hot"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 7H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></div><div><div class="stat-label">الطلبات الجديدة</div><div class="stat-value" id="statNewOrders">0</div><div class="stat-foot">بانتظار المراجعة</div></div></div>
+    <div class="stat-card"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="stat-label">إجمالي العملاء</div><div class="stat-value" id="statCustomers">0</div><div class="stat-foot">عملاء مسجلون بالطلبات</div></div></div>
+   </div>
+
+   <div class="dashboard-grid">
+    <div class="panel">
+     <div class="panel-head"><div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-5 5"/></svg>المبيعات خلال آخر 7 أيام</div><button class="mini-btn" id="refreshChart">تحديث</button></div>
+     <div class="chart-wrap"><canvas id="salesChart"></canvas></div>
+     <div class="chart-legend">المبيعات اليومية حسب تاريخ الطلب المحفوظ</div>
+    </div>
+    <div class="panel">
+     <div class="panel-head"><div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 7H6"/></svg>آخر الطلبات</div><button class="mini-btn red" data-goto="orders">عرض الكل ←</button></div>
+     <div class="orders-list" id="latestOrders"></div>
+    </div>
+   </div>
+
+   <div class="quick-grid">
+    <button class="quick-card primary" data-goto="products" data-add-product="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>إضافة منتج</button>
+    <button class="quick-card" data-goto="products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8"/></svg>المنتجات</button>
+    <button class="quick-card" data-goto="categories"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>الأقسام</button>
+    <button class="quick-card" data-goto="customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 7"/></svg>العملاء</button>
+    <button class="quick-card" data-goto="messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2.1-5.3A8.5 8.5 0 1 1 21 11.5Z"/></svg>الشكاوى</button>
+    <button class="quick-card" data-goto="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 13.5a7 7 0 0 0 0-3l2-1.5-2-3.5-2.3.8a7 7 0 0 0-2.6-1.5L13.7 2h-4l-.4 2.8a7 7 0 0 0-2.6 1.5L4.4 5.5l-2 3.5 2 1.5a7 7 0 0 0 0 3l-2 1.5 2 3.5 2.3-.8a7 7 0 0 0 2.6 1.5l.4 2.8h4l.4-2.8a7 7 0 0 0 2.6-1.5l2.3.8 2-3.5Z"/></svg>الإعدادات</button>
+   </div>
+  </section>
+
+  <section class="section" id="orders">
+   <div class="page-heading"><div><h1>الطلبات</h1><p>متابعة الطلبات وتحديث حالتها</p></div></div>
+   <div class="panel"><div class="toolbar"><input class="field search" id="orderSearch" placeholder="بحث برقم الطلب أو اسم العميل"><span class="muted small" id="ordersTotal"></span></div><div id="ordersTable"></div></div>
+  </section>
+
+  <section class="section" id="products">
+   <div class="page-heading"><div><h1>المنتجات</h1><p>عرض وتعديل وحذف منتجات المتجر</p></div><button class="btn" id="newProductBtn">＋ إضافة منتج</button></div>
+   <div class="panel"><div class="toolbar"><input class="field search" id="productSearch" placeholder="ابحث عن منتج..."><span class="muted small" id="productsTotal"></span></div><div id="productsTable"></div></div>
+  </section>
+
+  <section class="section" id="productAdd">
+   <div class="page-heading"><div><h1 id="productPageHeading">إضافة منتج جديد</h1><p>أدخل بيانات المنتج واختر صورته من هاتفك</p></div><button class="btn secondary" type="button" id="backToProducts">العودة إلى المنتجات</button></div>
+   <div class="panel" id="productEditor">
+    <div class="panel-head"><div class="panel-title" id="productEditorTitle">إضافة منتج جديد</div><button class="iconbtn" id="closeProductEditor">✕</button></div>
+    <form id="productForm">
+     <input type="hidden" name="id">
+     <div class="form-grid">
+      <div><label>اسم المنتج</label><input class="field" name="name" required></div>
+      <div><label>السعر بالريال السعودي</label><input class="field" name="price" type="number" min="0" step="0.01" required></div>
+      <div><label>القسم</label><select class="field" name="category" id="productCategory"></select></div>
+      <div class="image-upload">
+<label>رفع صورة المنتج من الهاتف</label>
+<input class="field" id="productImageFile" type="file" accept="image/*">
+<div class="muted small">اختر صورة من معرض الصور أو الكاميرا. سيتم ضغطها تلقائياً لتناسب التخزين المحلي.</div>
+<div class="image-preview" id="productImagePreview"><img id="productImagePreviewImg" alt="معاينة صورة المنتج"><div><strong>معاينة الصورة</strong><br><button type="button" id="removeProductImage">إزالة الصورة</button></div></div>
+</div>
+      <div><label>رمز تعبيري (اختياري)</label><input class="field" name="emoji" maxlength="5" placeholder="🎁"></div>
+      <div><label>الوصف</label><input class="field" name="desc"></div>
+     </div>
+     <div class="form-actions"><button class="btn" type="submit">حفظ المنتج</button><button class="btn secondary" type="button" id="cancelProduct">إلغاء</button></div>
+    </form>
+   </div>
+  </section>
+
+  <section class="section" id="categories">
+   <div class="page-heading"><div><h1>الأقسام</h1><p>إدارة أقسام المنتجات</p></div></div>
+   <div class="panel">
+    <form id="categoryForm" class="toolbar"><input class="field search" name="category" placeholder="اسم القسم الجديد" required><button class="btn">＋ إضافة قسم</button></form>
+    <div id="categoriesList"></div>
+   </div>
+  </section>
+
+  <section class="section" id="customers">
+   <div class="page-heading"><div><h1>العملاء</h1><p>قائمة العملاء المستنتجة من الطلبات المحفوظة</p></div></div>
+   <div class="panel"><input class="field search" id="customerSearch" placeholder="بحث باسم العميل أو رقم الهاتف"><div id="customersList"></div></div>
+  </section>
+
+  <section class="section" id="messages">
+   <div class="page-heading"><div><h1>الشكاوى والرسائل</h1><p>مراجعة الرسائل المسجلة في المتجر</p></div></div>
+   <div class="panel"><div id="messagesList"></div></div>
+  </section>
+
+  <section class="section" id="settings">
+   <div class="page-heading"><div><h1>الإعدادات</h1><p>تعديل بيانات المتجر وبيانات دخول لوحة التحكم</p></div></div>
+   <div class="settings-grid">
+    <div class="panel">
+     <div class="panel-head"><div class="panel-title">بيانات المتجر</div></div>
+     <form id="storeForm">
+      <label>اسم المتجر</label><input class="field" name="name" placeholder="RAI">
+      <label>رقم التواصل</label><input class="field" name="phone" placeholder="رقم الهاتف">
+      <label>رقم واتساب لاستقبال الطلبات (مع مفتاح الدولة)</label><input class="field" name="whatsapp" placeholder="مثال: 9665XXXXXXXX">
+      <label>البريد الإلكتروني</label><input class="field" name="email" type="email" placeholder="البريد الإلكتروني">
+      <button class="btn" type="submit">حفظ بيانات المتجر</button>
+     </form>
+    </div>
+    <div class="panel">
+     <div class="panel-head"><div class="panel-title">تغيير بيانات الدخول</div></div>
+     <form id="authForm">
+      <label>اسم المستخدم الجديد</label><input class="field" name="username" required>
+      <label>كلمة المرور الجديدة</label><input class="field" name="password" type="password" minlength="6" required>
+      <button class="btn" type="submit">حفظ بيانات الدخول</button>
+     </form>
+     <div class="notice">يتم الاحتفاظ ببيانات الدخول الحالية إذا كانت محفوظة في هذا المتصفح. تغييرها هنا يحدّث بيانات الدخول لهذا المتصفح فقط. هذه حماية محلية وليست مصادقة خادمية.</div>
+    </div>
+   </div>
+   <div class="panel" style="margin-top:14px">
+    <div class="panel-title">معلومات التخزين</div>
+    <p class="muted small" style="line-height:1.9">تعمل هذه اللوحة دون خدمات خارجية، وتستخدم التخزين المحلي للمتصفح. ستظهر البيانات المحفوظة على الجهاز والمتصفح نفسيهما فقط.</p>
+   </div>
+  </section>
+
+  <footer style="text-align:center;color:#888;font-size:11px;padding:22px 0 8px;border-top:1px solid #29252b;margin-top:22px">♥ RAI - متجر راي</footer>
+ </main>
+</div>
+
+<script>
+'use strict';
+const DATA='rai_store_data_v1';
+const AUTH='rai_admin_auth';
+const SET='rai_store_settings';
+const LEGACY_AUTH={username:'asd',password:'asd700069'};
+
+const baseData={
+ categories:['الكل','العطور','الإكسسوارات','الحقائب','الأزياء','العروض'],
+ products:[
+  {id:1,name:'عطر راقٍ',category:'العطور',price:120,emoji:'🌸',desc:'رائحة أنيقة تدوم طويلاً'},
+  {id:2,name:'حقيبة أنيقة',category:'الحقائب',price:180,emoji:'👜',desc:'تصميم عملي وأنيق'},
+  {id:3,name:'إكسسوار مميز',category:'الإكسسوارات',price:65,emoji:'✨',desc:'لمسة تكمل إطلالتك'},
+  {id:4,name:'ساعة كلاسيكية',category:'الإكسسوارات',price:210,emoji:'⌚',desc:'أناقة في كل وقت'}
+ ],
+ orders:[],messages:[]
+};
+
+function safeReadData(){
+ try{
+  const old=JSON.parse(localStorage.getItem(DATA)||'{}');
+  return {
+   ...baseData,...old,
+   categories:Array.isArray(old.categories)?old.categories:baseData.categories,
+   products:Array.isArray(old.products)?old.products:baseData.products,
+   orders:Array.isArray(old.orders)?old.orders:[],
+   messages:Array.isArray(old.messages)?old.messages:[]
+  };
+ }catch(e){return JSON.parse(JSON.stringify(baseData))}
+}
+function saveData(){localStorage.setItem(DATA,JSON.stringify(data))}
+function getAuth(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(AUTH)||'null');
+  return saved&&saved.username&&saved.password?saved:LEGACY_AUTH;
+ }catch(e){return LEGACY_AUTH}
+}
+function getSettings(){
+ try{return JSON.parse(localStorage.getItem(SET)||'{}')||{}}
+ catch(e){return {}}
+}
+function esc(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function money(v){return String(Number(v||0))}
+function invoiceDate(value){const d=new Date(value);if(!Number.isNaN(d.getTime()))return d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0');const m=String(value||'').match(/(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/);return m?m[1]+'/'+m[2].padStart(2,'0')+'/'+m[3].padStart(2,'0'):String(value||'')}
+function getOrderTotal(o){return Number(o.total??o.grandTotal??o.amount??0)||0}
+function getOrderName(o){return o.name||o.customerName||o.customer||'عميل'}
+function getOrderPhone(o){return o.phone||o.mobile||o.customerPhone||''}
+function getOrderDate(o){
+ const raw=o.date||o.createdAt||o.created_at||o.timestamp;
+ if(!raw)return null;
+ const d=new Date(raw);
+ return isNaN(d.getTime())?null:d;
+}
+function statusClass(s){
+ const x=String(s||'').toLowerCase();
+ if(/شحن|shipped/.test(x))return 'processing';
+ if(/مكتمل|تم التوصيل|delivered|complete|success/.test(x))return 'completed';
+ if(/ملغ|cancel|رفض/.test(x))return 'cancelled';
+ if(/معالج|تجهيز|processing|قيد/.test(x))return 'processing';
+ return 'new';
+}
+function normalizeStatus(s){
+ const x=String(s||'').toLowerCase();
+ if(/شحن|shipped/.test(x))return 'تم الشحن';
+ if(/مكتمل|تم التوصيل|delivered|complete|success/.test(x))return 'تم التوصيل';
+ if(/ملغ|cancel|رفض/.test(x))return 'ملغي';
+ if(/معالج|تجهيز|processing|قيد/.test(x))return 'قيد المعالجة';
+ return 'جديد';
+}
+let data=safeReadData();
+
+const $=id=>document.getElementById(id);
+function showPage(page){
+ document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===page));
+ document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ document.body.classList.remove('menu-open');
+ renderAll();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{
+ showPage(b.dataset.goto);
+ if(b.dataset.addProduct)setTimeout(openProductEditor,100);
+}));
+$('menuToggle').addEventListener('click',()=>document.body.classList.toggle('menu-open'));
+$('backdrop').addEventListener('click',()=>document.body.classList.remove('menu-open'));
+
+$('loginForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const f=new FormData(e.currentTarget);
+ const auth=getAuth();
+ if(String(f.get('username'))===String(auth.username)&&String(f.get('password'))===String(auth.password)){
+  sessionStorage.setItem('rai_admin_logged','yes');
+  $('loginError').textContent='';
+  openApp();
+ }else{$('loginError').textContent='اسم المستخدم أو كلمة المرور غير صحيحة.'}
+});
+function openApp(){
+ $('loginScreen').classList.add('hidden');
+ $('app').classList.remove('hidden');
+ $('welcomeUser').textContent=getAuth().username;
+ $('today').textContent=new Date().toLocaleDateString('ar-SA');
+ renderAll();
+}
+if(sessionStorage.getItem('rai_admin_logged')==='yes')openApp();
+
+function renderAll(){
+ data=safeReadData();
+ const sales=data.orders.reduce((sum,o)=>sum+getOrderTotal(o),0);
+ const newOrders=data.orders.filter(o=>statusClass(o.status)==='new').length;
+ const customers=uniqueCustomers();
+ $('statSales').textContent=money(sales);
+ $('statProducts').textContent=data.products.length;
+ $('statNewOrders').textContent=newOrders;
+ $('statCustomers').textContent=customers.length;
+ $('newOrdersCount').textContent=newOrders;
+ renderLatestOrders();
+ renderOrders();
+ renderProducts();
+ renderCategories();
+ renderCustomers();
+ renderMessages();
+ fillSettings();
+ drawSalesChart();
+}
+function renderLatestOrders(){
+ const arr=[...data.orders].slice(-5).reverse();
+ $('latestOrders').innerHTML=arr.length?arr.map(o=>`
+ <div class="order-row">
+  <svg class="order-cube" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9"/></svg>
+  <span class="order-number">#${esc(o.id??o.orderNumber??'—')}</span>
+  <span class="order-price">${money(getOrderTotal(o))} ريال</span>
+  <span class="status ${statusClass(o.status)}">${esc(normalizeStatus(o.status))}</span>
+ </div>`).join(''):'<div class="empty">لا توجد طلبات حتى الآن</div>';
+}
+let currentInvoiceOrder=null;
+function invoiceHtml(o){
+ const items=Array.isArray(o.items)?o.items:[];
+ const rows=items.map(i=>{const qty=Number(i.qty||i.quantity||1),price=Number(i.price||0);return `<tr><td>${esc(i.name||i.product||i.title||'منتج')}</td><td>${qty}</td><td>${money(price)} ر.س</td><td>${money(price*qty)} ر.س</td></tr>`}).join('');
+ return `<div style="direction:rtl;font-family:Tahoma,Arial;color:#222"><div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #e10b37;padding-bottom:12px"><div><div style="font-size:30px;font-weight:900;color:#e10b37">RAI</div><div>متجر راي الإلكتروني</div></div><div style="text-align:left"><h2 style="margin:0">فاتورة طلب</h2><b style="color:#d10b35">رقم الطلب: #${esc(o.id??o.orderNumber??'')}</b></div></div><p style="color:#198754;font-weight:bold">تم استلام الطلب</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;line-height:1.8"><div><b>العميل:</b> ${esc(getOrderName(o))}</div><div><b>الجوال:</b> ${esc(getOrderPhone(o))}</div><div><b>المدينة:</b> ${esc(o.city||'')}</div><div><b>التاريخ:</b> ${esc(invoiceDate(o.date))}</div><div style="grid-column:1/-1"><b>العنوان:</b> ${esc(o.address||'')}</div><div style="grid-column:1/-1"><b>العنوان الوطني:</b> ${esc(o.nationalAddress||'غير محدد')}</div><div><b>الحالة:</b> ${esc(normalizeStatus(o.status))}</div><div><b>الدفع:</b> ${esc(o.payment||'الدفع عند الاستلام')}</div></div><h3 style="margin:18px 0 8px;color:#d10b35">المنتجات</h3><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:#f8e8ed"><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr></thead><tbody>${rows||'<tr><td colspan="4">لا توجد تفاصيل منتجات</td></tr>'}</tbody></table><div style="margin-top:16px;padding:13px;background:#fff0f3;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#b90b31"><span>الإجمالي</span><span>${money(getOrderTotal(o))} ريال سعودي</span></div><p style="text-align:center;margin-top:20px;font-weight:bold">شكراً لتسوقكم من متجر RAI</p></div>`;
+}
+function showInvoice(id){const o=data.orders.find(x=>String(x.id??x.orderNumber??'')===String(id));if(!o)return;currentInvoiceOrder=o;$('adminInvoiceContent').innerHTML=invoiceHtml(o);$('invoiceModal').style.display='flex'}
+function printCurrentInvoice(){if(!currentInvoiceOrder)return;const w=window.open('','_blank');if(!w){alert('اسمح بفتح النوافذ المنبثقة لطباعة الفاتورة.');return}w.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة الطلب</title><style>body{font-family:Tahoma,Arial;padding:24px;color:#222}table th,table td{border:1px solid #ddd;padding:10px;text-align:right}</style></head><body>'+invoiceHtml(currentInvoiceOrder)+'<script>window.onload=()=>window.print()<\\/script></body></html>');w.document.close()}
+function renderOrders(){
+ const q=($('orderSearch')?.value||'').trim().toLowerCase();
+ const arr=[...data.orders].reverse().filter(o=>
+  String(o.id??o.orderNumber??'').toLowerCase().includes(q)||
+  getOrderName(o).toLowerCase().includes(q)||
+  getOrderPhone(o).toLowerCase().includes(q)
+ );
+ $('ordersTotal').textContent='عدد الطلبات: '+data.orders.length;
+ $('ordersTable').innerHTML=arr.length?`<div class="table-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الهاتف</th><th>الإجمالي</th><th>الحالة</th><th>تحديث الحالة</th><th>تفاصيل</th></tr></thead><tbody>${arr.map(o=>{
+  const id=String(o.id??o.orderNumber??'');
+  return `<tr><td>#${esc(id)}</td><td>${esc(getOrderName(o))}</td><td>${esc(getOrderPhone(o)||'—')}</td><td>${money(getOrderTotal(o))} ر.س</td><td><span class="status ${statusClass(o.status)}">${esc(normalizeStatus(o.status))}</span></td><td><select class="field" style="margin:0;min-width:125px;padding:8px" data-status-id="${esc(id)}"><option ${normalizeStatus(o.status)==='جديد'?'selected':''}>جديد</option><option ${normalizeStatus(o.status)==='قيد المعالجة'?'selected':''}>قيد التجهيز</option><option ${normalizeStatus(o.status)==='تم الشحن'?'selected':''}>تم الشحن</option><option ${normalizeStatus(o.status)==='تم التوصيل'?'selected':''}>تم التوصيل</option><option ${normalizeStatus(o.status)==='ملغي'?'selected':''}>ملغي</option></select></td><td><div class="table-actions"><button class="mini-btn" data-order-detail="${esc(id)}">عرض</button><button class="mini-btn red" data-order-invoice="${esc(id)}">الفاتورة</button></div></td></tr>`;
+ }).join('')}</tbody></table></div>`:'<div class="empty">لا توجد طلبات مطابقة</div>';
+ $('ordersTable').querySelectorAll('[data-status-id]').forEach(sel=>sel.addEventListener('change',()=>{
+  const o=data.orders.find(x=>String(x.id??x.orderNumber??'')===sel.dataset.statusId);
+  if(o){o.status=sel.value;saveData();renderAll()}
+ }));
+ $('ordersTable').querySelectorAll('[data-order-detail]').forEach(btn=>btn.addEventListener('click',()=>showOrderDetails(btn.dataset.orderDetail)));
+ $('ordersTable').querySelectorAll('[data-order-invoice]').forEach(btn=>btn.addEventListener('click',()=>showInvoice(btn.dataset.orderInvoice)));
+}
+function showOrderDetails(id){
+ const o=data.orders.find(x=>String(x.id??x.orderNumber??'')===String(id));
+ if(!o)return;
+ const items=Array.isArray(o.items)?o.items.map(i=>(i.name||i.title||'منتج')+' × '+(i.quantity||i.qty||1)).join('\n'):'';
+ alert('رقم الطلب: '+(o.id??o.orderNumber??'')+'\nالعميل: '+getOrderName(o)+'\nالهاتف: '+getOrderPhone(o)+'\nالمدينة: '+(o.city||'')+'\nالعنوان: '+(o.address||'')+'\nالعنوان الوطني: '+(o.nationalAddress||'')+'\nالمنتجات:\n'+items+'\nالإجمالي: '+money(getOrderTotal(o))+' ريال\nالحالة: '+normalizeStatus(o.status)+'\nملاحظات: '+(o.notes||''));
+}
+function renderProducts(){
+ const q=($('productSearch')?.value||'').trim().toLowerCase();
+ const arr=data.products.filter(p=>(p.name||p.title||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q));
+ $('productsTotal').textContent='عدد المنتجات: '+data.products.length;
+ $('productsTable').innerHTML=arr.length?`<div class="table-wrap"><table><thead><tr><th>المنتج</th><th>القسم</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody>${arr.map(p=>{
+ const id=String(p.id);
+ return `<tr><td>${p.image?`<img class="product-thumb" src="${esc(p.image)}" alt="">`:esc(p.emoji||'📦')} ${esc(p.name||p.title||'منتج')}</td><td>${esc(p.category||'—')}</td><td>${money(p.price)} ر.س</td><td><div class="table-actions"><button class="mini-btn" data-edit-product="${esc(id)}">تعديل</button><button class="mini-btn red" data-delete-product="${esc(id)}">حذف</button></div></td></tr>`;
+ }).join('')}</tbody></table></div>`:'<div class="empty">لا توجد منتجات</div>';
+ $('productsTable').querySelectorAll('[data-edit-product]').forEach(b=>b.addEventListener('click',()=>editProduct(b.dataset.editProduct)));
+ $('productsTable').querySelectorAll('[data-delete-product]').forEach(b=>b.addEventListener('click',()=>deleteProduct(b.dataset.deleteProduct)));
+}
+function openProductEditor(){
+ showPage('productAdd');
+ $('productPageHeading').textContent='إضافة منتج جديد';
+ $('productEditor').classList.remove('hidden');
+ $('productEditorTitle').textContent='إضافة منتج جديد';
+ $('productForm').reset();$('productForm').elements.id.value='';
+ fillProductCategories();
+ selectedProductImage='';updateProductImagePreview('');
+ $('productEditor').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function closeProductEditor(){$('productEditor').classList.add('hidden');showPage('products')}
+function fillProductCategories(){
+ $('productCategory').innerHTML=data.categories.filter(c=>c!=='الكل').map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+function editProduct(id){
+ const p=data.products.find(x=>String(x.id)===String(id));if(!p)return;
+ fillProductCategories();
+ const f=$('productForm');
+ f.elements.id.value=p.id;
+ f.elements.name.value=p.name||p.title||'';
+ f.elements.price.value=p.price??'';
+ f.elements.category.value=p.category||data.categories.find(c=>c!=='الكل')||'';
+ f.elements.emoji.value=p.emoji||'';
+ f.elements.desc.value=p.desc||p.description||'';
+ selectedProductImage=p.image||'';updateProductImagePreview(selectedProductImage);
+ $('productEditorTitle').textContent='تعديل المنتج';
+ $('productPageHeading').textContent='تعديل المنتج';
+ showPage('productAdd');
+ $('productEditor').classList.remove('hidden');
+ $('productEditor').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function deleteProduct(id){
+ if(!confirm('هل تريد حذف هذا المنتج؟'))return;
+ data.products=data.products.filter(p=>String(p.id)!==String(id));
+ saveData();renderAll();
+}
+$('newProductBtn').addEventListener('click',openProductEditor);
+$('backToProducts').addEventListener('click',()=>showPage('products'));
+$('closeProductEditor').addEventListener('click',closeProductEditor);
+$('cancelProduct').addEventListener('click',closeProductEditor);
+let selectedProductImage='';
+function updateProductImagePreview(src){
+ const box=$('productImagePreview'),img=$('productImagePreviewImg');
+ if(src){img.src=src;box.classList.add('show')}else{img.removeAttribute('src');box.classList.remove('show')}
+}
+$('productImageFile').addEventListener('change',async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file)return;
+ if(!file.type.startsWith('image/')){alert('يرجى اختيار ملف صورة صحيح');e.target.value='';return}
+ if(file.size>12*1024*1024){alert('حجم الصورة كبير جداً. اختر صورة أقل من 12 ميجابايت');e.target.value='';return}
+ try{
+  const dataUrl=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)});
+  const img=new Image();img.onload=()=>{
+   const max=1000,scale=Math.min(1,max/Math.max(img.width,img.height));
+   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+   const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
+   selectedProductImage=canvas.toDataURL('image/jpeg',0.76);updateProductImagePreview(selectedProductImage);
+  };img.onerror=()=>alert('تعذر قراءة الصورة، جرّب صورة أخرى');img.src=dataUrl;
+ }catch(err){alert('تعذر تحميل الصورة')}
+});
+$('removeProductImage').addEventListener('click',()=>{selectedProductImage='';$('productImageFile').value='';updateProductImagePreview('')});
+$('productForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const f=new FormData(e.currentTarget),id=String(f.get('id')||'');
+ const existing=id?data.products.find(p=>String(p.id)===id):null;
+ const product={id:id||String(Date.now()),name:String(f.get('name')).trim(),price:Number(f.get('price')),category:String(f.get('category')||''),image:selectedProductImage||(existing?.image||''),emoji:String(f.get('emoji')||'').trim(),desc:String(f.get('desc')||'').trim()};
+ if(id){const old=data.products.findIndex(p=>String(p.id)===id);if(old>=0)data.products[old]={...data.products[old],...product}}
+ else data.products.unshift(product);
+ try{saveData();$('productEditor').classList.add('hidden');showPage('products');renderAll();alert('تم حفظ المنتج والصورة بنجاح')}
+ catch(err){alert('تعذر الحفظ. قد تكون مساحة التخزين ممتلئة؛ اختر صورة أصغر.')}
+});
+function renderCategories(){
+ $('categoriesList').innerHTML=data.categories.filter(c=>c!=='الكل').map(c=>`
+ <div class="category-row"><strong>${esc(c)}</strong><button class="mini-btn red" data-del-category="${esc(c)}">حذف القسم</button></div>`).join('')||'<div class="empty">لا توجد أقسام</div>';
+ $('categoriesList').querySelectorAll('[data-del-category]').forEach(b=>b.addEventListener('click',()=>{
+  const c=b.dataset.delCategory;
+  if(data.products.some(p=>p.category===c)){alert('لا يمكن حذف هذا القسم لأنه يحتوي على منتجات. غيّر قسم المنتجات أولاً.');return}
+  if(confirm('حذف القسم '+c+'؟')){data.categories=data.categories.filter(x=>x!==c);saveData();renderAll()}
+ }));
+}
+$('categoryForm').addEventListener('submit',e=>{
+ e.preventDefault();const input=e.currentTarget.elements.category;const name=input.value.trim();
+ if(!name)return;
+ if(data.categories.includes(name)){alert('هذا القسم موجود بالفعل');return}
+ data.categories.push(name);saveData();e.currentTarget.reset();renderAll();
+});
+function uniqueCustomers(){
+ const map=new Map();
+ data.orders.forEach(o=>{
+  const phone=getOrderPhone(o),name=getOrderName(o);
+  const key=phone||name;
+  if(!map.has(key))map.set(key,{name,phone,orders:0,total:0});
+  const c=map.get(key);c.orders++;c.total+=getOrderTotal(o);
+ });
+ return [...map.values()];
+}
+function renderCustomers(){
+ const q=($('customerSearch')?.value||'').trim().toLowerCase();
+ const arr=uniqueCustomers().filter(c=>c.name.toLowerCase().includes(q)||c.phone.toLowerCase().includes(q));
+ $('customersList').innerHTML=arr.length?arr.map(c=>`<div class="customer-card"><div class="customer-avatar">${esc((c.name||'ع').slice(0,1))}</div><div class="customer-info"><strong>${esc(c.name)}</strong><small>${esc(c.phone||'لا يوجد رقم هاتف')} · ${c.orders} طلب</small></div><strong>${money(c.total)} ر.س</strong></div>`).join(''):'<div class="empty">لا توجد بيانات عملاء في الطلبات المحفوظة</div>';
+}
+function renderMessages(){
+ $('messagesList').innerHTML=data.messages.length?[...data.messages].reverse().map(m=>`<div class="message-card"><div class="toolbar"><strong>${esc(m.name||m.customer||'رسالة من عميل')}</strong><span class="message-meta">${esc(m.date||m.createdAt||'')}</span></div><div class="message-meta">${esc(m.phone||m.email||'')}</div><p>${esc(m.message||m.text||m.complaint||'')}</p></div>`).join(''):'<div class="empty">لا توجد شكاوى أو رسائل محفوظة حالياً</div>';
+}
+function fillSettings(){
+ const s=getSettings(),sf=$('storeForm'),af=$('authForm');
+ sf.elements.name.value=s.name||'RAI';
+ sf.elements.phone.value=s.phone||'';
+ sf.elements.email.value=s.email||'';
+ if(sf.elements.whatsapp)sf.elements.whatsapp.value=s.whatsapp||'';
+ af.elements.username.value=getAuth().username||'';
+}
+$('storeForm').addEventListener('submit',e=>{
+ e.preventDefault();const s=Object.fromEntries(new FormData(e.currentTarget));
+ localStorage.setItem(SET,JSON.stringify(s));alert('تم حفظ بيانات المتجر في هذا المتصفح');
+});
+$('authForm').addEventListener('submit',e=>{
+ e.preventDefault();const f=new FormData(e.currentTarget);
+ const username=String(f.get('username')||'').trim(),password=String(f.get('password')||'');
+ if(!username||password.length<6){alert('أدخل اسم مستخدم وكلمة مرور من 6 أحرف على الأقل');return}
+ localStorage.setItem(AUTH,JSON.stringify({username,password}));
+ sessionStorage.removeItem('rai_admin_logged');
+ alert('تم تحديث بيانات الدخول. سجّل الدخول مرة أخرى بالبيانات الجديدة.');
+ location.reload();
+});
+$('logoutBtn')?.addEventListener('click',logout);
+function logout(){sessionStorage.removeItem('rai_admin_logged');location.reload()}
+const logoutNav=document.createElement('button');
+logoutNav.className='nav-btn';
+logoutNav.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/></svg>تسجيل الخروج';
+logoutNav.addEventListener('click',logout);
+$('sidebar').appendChild(logoutNav);
+
+$('orderSearch').addEventListener('input',renderOrders);
+$('productSearch').addEventListener('input',renderProducts);
+$('customerSearch').addEventListener('input',renderCustomers);
+$('refreshChart').addEventListener('click',drawSalesChart);
+
+function drawSalesChart(){
+ const canvas=$('salesChart');if(!canvas)return;
+ const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+ const ratio=window.devicePixelRatio||1;
+ canvas.width=Math.round(rect.width*ratio);canvas.height=Math.round(rect.height*ratio);
+ const ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);
+ const w=rect.width,h=rect.height,pad={l:42,r:12,t:15,b:30};
+ const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+ const now=new Date();const days=[];
+ for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);d.setHours(0,0,0,0);days.push(d)}
+ const vals=days.map(day=>data.orders.reduce((sum,o)=>{
+  const dt=getOrderDate(o);return dt&&dt.toDateString()===day.toDateString()?sum+getOrderTotal(o):sum
+ },0));
+ const max=Math.max(100,...vals)*1.15;
+ ctx.clearRect(0,0,w,h);
+ ctx.font='10px Tahoma';ctx.textAlign='right';ctx.textBaseline='middle';
+ for(let i=0;i<=3;i++){
+  const y=pad.t+ch*i/3;
+  ctx.strokeStyle='rgba(255,255,255,.09)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+  ctx.fillStyle='#aaa';ctx.fillText(money(max*(1-i/3)),pad.l-8,y);
+ }
+ const pts=vals.map((v,i)=>({x:pad.l+(cw*(days.length===1?0:i/(days.length-1))),y:pad.t+ch-(v/max)*ch}));
+ const gradient=ctx.createLinearGradient(0,pad.t,0,h-pad.b);gradient.addColorStop(0,'rgba(242,11,54,.48)');gradient.addColorStop(1,'rgba(242,11,54,.02)');
+ ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.lineTo(pts[pts.length-1].x,h-pad.b);ctx.lineTo(pts[0].x,h-pad.b);ctx.closePath();ctx.fillStyle=gradient;ctx.fill();
+ ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#ff1744';ctx.lineWidth=3;ctx.lineJoin='round';ctx.stroke();
+ pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#ff1744';ctx.stroke()});
+ ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='#ddd';
+ const names=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+ days.forEach((d,i)=>{const x=pad.l+cw*i/6;ctx.fillText(names[d.getDay()],x,h-pad.b+9)});
+}
+let resizeTimer;
+window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(drawSalesChart,120)});
+</script>
+<div id="invoiceModal" style="display:none;position:fixed;inset:0;z-index:1000;background:#000c;padding:12px;overflow:auto;align-items:flex-start;justify-content:center"><div style="width:min(720px,100%);margin:18px auto;background:#fff;color:#222;border-radius:14px;padding:18px"><div id="adminInvoiceContent"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px"><button class="btn" onclick="printCurrentInvoice()">طباعة الفاتورة</button><button class="mini-btn" onclick="document.getElementById('invoiceModal').style.display='none'">إغلاق</button></div></div></div>
+</body>
+  </html>
